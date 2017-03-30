@@ -21,7 +21,7 @@ public class RxTableView: NSObject, UITableViewDelegate, UITableViewDataSource {
         self.table = table
     }
     
-    public func bindTable (_ table: UITableView) -> RxTableView {
+    public func bind (toTable table: UITableView) -> RxTableView {
         self.table = table
         return self
     }
