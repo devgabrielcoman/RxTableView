@@ -34,7 +34,7 @@ public class RxTableView: NSObject, UITableViewDelegate, UITableViewDataSource {
     // Estimate full table height
     ////////////////////////////////////////////////////////////////////////////
     
-    func estimateRowHeight (_ height: CGFloat) -> RxTableView {
+    public func estimateRowHeight (_ height: CGFloat) -> RxTableView {
         
         estimatedRowHeight = height
         
