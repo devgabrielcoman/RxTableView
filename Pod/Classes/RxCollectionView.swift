@@ -41,7 +41,8 @@ public class RxCollectionView: NSObject,
     
     private var cellSize: CGSize?
     private var modelToRow: [String : RxCell] = [:]
-    var initialData: [Any] = []
+    private var clicks: [String : (IndexPath, Any) -> Void] = [:]
+    fileprivate var initialData: [Any] = []
     private var data: [Any] = []
     
     private var collectionView: UICollectionView?
@@ -130,6 +131,23 @@ public class RxCollectionView: NSObject,
     }
     
     ////////////////////////////////////////////////////////////////////////////
+    // Row Clicks
+    ////////////////////////////////////////////////////////////////////////////
+    
+    public func clickRow <Model> (forReuseIdentifier identifier: String,
+                          _ action: @escaping (IndexPath, Model) -> Void) -> RxCollectionView {
+        
+        let key = String(describing: Model.self)
+        clicks[key] = { index, model in
+            if let m = model as? Model {
+                action (index, m)
+            }
+        }
+        
+        return self
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
     // Final Update method
     ////////////////////////////////////////////////////////////////////////////
     
@@ -177,6 +195,14 @@ public class RxCollectionView: NSObject,
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return cellSize ?? kDEFAULT_CELL_SIZE
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = data[indexPath.row]
+        let key = String(describing: type(of: item))
+        let click = clicks[key]
+        
+        click? (indexPath, item)
     }
 }
 
