@@ -38,7 +38,9 @@ public class RxCollectionView: NSObject,
     
     private let kDEFAULT_REUSE_ID: String = "RxCollectionView_ID"
     private let kDEFAULT_CELL_SIZE: CGSize = CGSize(width: 50, height: 50)
+    private let kDEFAULT_EDGE_INSETS: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
     
+    private var edgeIndsets: UIEdgeInsets?
     private var cellSize: CGSize?
     private var modelToRow: [String : RxCell] = [:]
     private var clicks: [String : (IndexPath, Any) -> Void] = [:]
@@ -68,8 +70,18 @@ public class RxCollectionView: NSObject,
     // Set Cell Size
     ////////////////////////////////////////////////////////////////////////////
     
-    public func cellSize(_ width: Int, _ height: Int) -> RxCollectionView {
+    public func set(cellSize size: CGSize) -> RxCollectionView {
+        self.cellSize = size
+        return self
+    }
+    
+    public func set(cellWidth width: Int, andHeight height: Int) -> RxCollectionView {
         self.cellSize = CGSize(width: width, height: height)
+        return self
+    }
+    
+    public func set(edgeInsets insets: UIEdgeInsets) -> RxCollectionView {
+        self.edgeIndsets = insets
         return self
     }
     
@@ -203,6 +215,10 @@ public class RxCollectionView: NSObject,
         let click = clicks[key]
         
         click? (indexPath, item)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return edgeIndsets ?? kDEFAULT_EDGE_INSETS
     }
 }
 
