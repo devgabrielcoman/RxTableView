@@ -64,43 +64,35 @@ public class RxCollectionView: NSObject,
     ////////////////////////////////////////////////////////////////////////////
     
     public func customise <Cell: UICollectionViewCell, Model> (cellForReuseIdentifier identifier: String,
-                                                               withNibName nibName: String,
-                                                               _ callback: @escaping (IndexPath, Cell, Model) -> Void) -> RxCollectionView {
+                           _ callback: @escaping (IndexPath, Cell, Model) -> Void) -> RxCollectionView {
         
         return customise(cellForReuseIdentifier: identifier,
-                         withNibName: nibName,
-                         withType: Cell.self,
+                         withNibName: nil,
+                         andType: Cell.self,
                          representedByModelOfType: Model.self,
                          customisedBy: callback)
     }
     
     public func customise <Cell: UICollectionViewCell, Model> (cellForReuseIdentifier identifier: String,
+                                                               withNibName nibName: String,
                                                                _ callback: @escaping (IndexPath, Cell, Model) -> Void) -> RxCollectionView {
         
         return customise(cellForReuseIdentifier: identifier,
-                         withType: Cell.self,
+                         withNibName: nibName,
+                         andType: Cell.self,
                          representedByModelOfType: Model.self,
                          customisedBy: callback)
     }
     
     private func customise <Cell: UICollectionViewCell, Model> (cellForReuseIdentifier identifier: String,
-                                                                withNibName nibName: String,
-                                                                withType cellType: Cell.Type,
+                                                                withNibName nibName: String?,
+                                                                andType cellType: Cell.Type,
                                                                 representedByModelOfType modelType: Model.Type,
                                                                 customisedBy callback: @escaping (IndexPath, Cell, Model) -> Void) -> RxCollectionView {
         
-        collectionView?.register(UINib(nibName: nibName, bundle: nil), forCellWithReuseIdentifier: identifier)
-        
-        return customise(cellForReuseIdentifier: identifier,
-                         withType: cellType,
-                         representedByModelOfType: modelType,
-                         customisedBy: callback)
-    }
-    
-    private func customise <Cell: UICollectionViewCell, Model> (cellForReuseIdentifier identifier: String,
-                                                                withType cellType: Cell.Type,
-                                                                representedByModelOfType modelType: Model.Type,
-                                                                customisedBy callback: @escaping (IndexPath, Cell, Model) -> Void) -> RxCollectionView {
+        if let nib = nibName {
+            collectionView?.register(UINib(nibName: nib, bundle: nil), forCellWithReuseIdentifier: identifier)
+        }
         
         var row = RxCell()
         row.identifier = identifier
